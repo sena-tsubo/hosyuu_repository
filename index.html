@@ -5,18 +5,51 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>About Me | Yui Sato</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+      /* ハンバーガーとモバイルメニューの最小スタイル */
+      .hamburger { display: none; background: transparent; border: 0; width: 44px; height: 44px; padding: 8px; cursor: pointer; }
+      .hamburger span { display: block; width: 22px; height: 2px; background: #222; border-radius: 2px; transition: transform 180ms ease, opacity 180ms ease; }
+      .hamburger span + span { margin-top: 6px; }
+      .hamburger[aria-expanded="true"] span:nth-child(1) { transform: translateY(8px) rotate(45deg); }
+      .hamburger[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
+      .hamburger[aria-expanded="true"] span:nth-child(3) { transform: translateY(-8px) rotate(-45deg); }
+      .mobile-nav { display: none; position: fixed; top: 66px; left: 0; right: 0; background: rgba(245,240,234,0.98); border-bottom: 1px solid rgba(0,0,0,0.06); z-index: 40; padding: 12px 18px; box-shadow: 0 12px 30px rgba(0,0,0,0.06); }
+      .mobile-nav a { display: block; padding: 10px 12px; border-radius: 10px; color: #222; font-weight: 600; }
+      @media (max-width: 900px) {
+        .nav-menu { display: none; }
+        .hamburger { display: inline-flex; align-items: center; justify-content: center; }
+        .mobile-nav.open { display: block; }
+      }
+    </style>
   </head>
   <body>
     <header>
       <div class="container nav">
         <a href="#top" class="brand"><span>Y</span>ui Sato</a>
+
+        <!-- ハンバーガーボタン（モバイル） -->
+        <button class="hamburger" aria-expanded="false" aria-label="メニュー">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
         <nav class="nav-menu" aria-label="メインナビゲーション">
           <a href="#about">About</a>
           <a href="#skills">Skills</a>
           <a href="#values">Values</a>
           <a href="#contact">Contact</a>
         </nav>
+
         <a href="#contact" class="cta">お問い合わせ</a>
+
+        <!-- モバイル用メニュー（ハンバーガー開閉で表示） -->
+        <div id="mobileNav" class="mobile-nav" aria-hidden="true">
+          <a href="#about">About</a>
+          <a href="#skills">Skills</a>
+          <a href="#values">Values</a>
+          <a href="#contact">Contact</a>
+        </div>
       </div>
     </header>
 
@@ -202,5 +235,27 @@
     <footer>
       © 2026 Yui Sato — designed with calm attention.
     </footer>
+    <script>
+      // ハンバーガーでモバイルメニューを開閉
+      (function(){
+        const btn = document.querySelector('.hamburger');
+        const mobile = document.getElementById('mobileNav');
+        if(!btn || !mobile) return;
+        btn.addEventListener('click', function(){
+          const expanded = btn.getAttribute('aria-expanded') === 'true';
+          btn.setAttribute('aria-expanded', String(!expanded));
+          mobile.classList.toggle('open');
+          mobile.setAttribute('aria-hidden', String(expanded));
+        });
+        // ウィンドウリサイズで閉じる
+        window.addEventListener('resize', function(){
+          if(window.innerWidth > 900){
+            btn.setAttribute('aria-expanded','false');
+            mobile.classList.remove('open');
+            mobile.setAttribute('aria-hidden','true');
+          }
+        });
+      })();
+    </script>
   </body>
 </html>
